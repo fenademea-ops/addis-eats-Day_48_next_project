@@ -9,10 +9,12 @@ export const metadata = {
   description: "Experience the vibrant culinary heritage of Ethiopia. From special kitfo to rich doro wot and vegan beyaynetu feasts, delivered across Addis Ababa.",
 };
 
+import { SITE_URL } from "@/lib/site-config";
+
 export default function HomePage() {
   const featuredDishes = FIXTURE_DISHES.filter((d) => d.featured).slice(0, 4);
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = SITE_URL;
 
   // JSON-LD Structured Data
   const jsonLd = {

@@ -7,6 +7,7 @@ import { FIXTURE_DISHES } from "@/lib/fixtures/dishes";
 import { getDishById } from "@/lib/services/mock-dish-service";
 import { formatEtb } from "@/lib/format";
 import { AddToCartControl } from "./AddToCartControl";
+import { SITE_URL } from "@/lib/site-config";
 
 interface DishDetailPageProps {
   params: Promise<{ id: string }>;
@@ -56,7 +57,7 @@ export default async function DishDetailPage({ params }: DishDetailPageProps) {
     notFound();
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = SITE_URL;
 
   // JSON-LD Structured Data
   const jsonLd = {
