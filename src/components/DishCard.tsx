@@ -134,10 +134,18 @@ export function DishCard({ dish, priority = false }: DishCardProps) {
           {dish.description}
         </p>
 
-        <div className="flex items-center justify-between pt-3 border-t border-stone-800/80 mt-auto">
-          <span className="text-[11px] text-stone-300 font-medium">
-            ⏱️ {dish.prepTime}
-          </span>
+        <div className="flex items-center justify-between gap-2 pt-3 border-t border-stone-800/80 mt-auto">
+          {/* Direct View Details Link */}
+          <Link
+            href={`/menu/${dish.id}`}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-stone-300 hover:text-amber-400 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 rounded px-1.5 py-1 transition-colors"
+            aria-label={`View details of ${dish.name}`}
+          >
+            <span>Details</span>
+            <svg className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
 
           {/* Sold Out vs Active Add Button */}
           {dish.isAvailable === false ? (
@@ -156,7 +164,7 @@ export function DishCard({ dish, priority = false }: DishCardProps) {
             <button
               type="button"
               onClick={handleAddClick}
-              className={`min-h-[44px] min-w-[44px] px-4 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 ${
+              className={`min-h-[44px] min-w-[44px] px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 shadow-sm ${
                 justAdded
                   ? "bg-emerald-600 text-white"
                   : "bg-amber-500 text-stone-950 hover:bg-amber-400 active:scale-95"

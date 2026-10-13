@@ -128,15 +128,15 @@ export default async function DishDetailPage({ params }: DishDetailPageProps) {
       </nav>
 
       <div className="bg-stone-900 border border-stone-800 rounded-2xl overflow-hidden shadow-xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 items-stretch">
           {/* Dish Image Container - Priority LCP Image */}
-          <div className="relative aspect-4/3 md:aspect-auto md:min-h-[420px] bg-stone-950">
+          <div className="relative w-full aspect-4/3 lg:aspect-auto lg:h-full min-h-[320px] lg:min-h-[440px] bg-stone-950 overflow-hidden">
             <Image
               src={dish.image}
               alt={dish.name}
               fill
               priority
-              sizes="(max-width: 768px) 100vw, 50vw"
+              sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
             />
             {dish.isAvailable === false && (
