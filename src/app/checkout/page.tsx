@@ -15,11 +15,20 @@ export default function CheckoutPage() {
   const { items, subtotal, clearCart, isHydrated } = useCart();
   const { user, isAuthenticated } = useAuth();
 
-  // Form states
-  const [customerName, setCustomerName] = useState(user?.name || "Abebe Bikila");
-  const [phone, setPhone] = useState(user?.phone || "+251911223344");
-  const [address, setAddress] = useState(user?.defaultAddress || "Bole Atlas, Cameroon St, House 412");
+  // Form states (prefill from user if signed in, otherwise prompt clean empty inputs)
+  const [customerName, setCustomerName] = useState(user?.name || "");
+  const [phone, setPhone] = useState(user?.phone || "");
+  const [address, setAddress] = useState(user?.defaultAddress || "");
   const [neighborhood, setNeighborhood] = useState<Neighborhood>("Bole");
+
+  // Sync state if user signs in while on page
+  useEffect(() => {
+    if (user) {
+      if (!customerName) setCustomerName(user.name);
+      if (!phone) setPhone(user.phone);
+      if (!address) setAddress(user.defaultAddress);
+    }
+  }, [user]);
 
   // Client-generated idempotency key (stable across double-taps for the same submission attempt)
   const defaultKey = useId();

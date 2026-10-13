@@ -20,15 +20,13 @@ const AUTH_STORAGE_KEY = "addis_eats_demo_user";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isHydrated = useHydrated();
-  const [user, setUser] = useState<DemoUser | null>(DEFAULT_DEMO_USER);
+  const [user, setUser] = useState<DemoUser | null>(null);
 
   // Load saved demo user after mount (hydration safe)
   useEffect(() => {
     try {
       const stored = localStorage.getItem(AUTH_STORAGE_KEY);
-      if (stored === "signed_out") {
-        queueMicrotask(() => setUser(null));
-      } else if (stored && DEMO_USERS[stored]) {
+      if (stored && stored !== "signed_out" && DEMO_USERS[stored]) {
         queueMicrotask(() => setUser(DEMO_USERS[stored]));
       }
     } catch {
