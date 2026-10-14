@@ -46,7 +46,7 @@ export function DishCard({ dish, priority = false }: DishCardProps) {
             src={dish.image}
             alt={dish.name}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
+            sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) 50vw, 360px"
             priority={priority}
             quality={75}
             className="object-cover group-hover:scale-105 transition-transform duration-300"

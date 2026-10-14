@@ -25,7 +25,7 @@ export default function MenuLayout({
       <div className="flex flex-col md:flex-row gap-8 items-start">
         <Suspense
           fallback={
-            <div className="w-full md:w-64 h-72 bg-stone-900 rounded-xl border border-stone-800 animate-pulse" />
+            <div className="w-full md:w-64 h-24 md:h-72 bg-stone-900 rounded-xl border border-stone-800 animate-pulse" />
           }
         >
           <MenuSidebar />

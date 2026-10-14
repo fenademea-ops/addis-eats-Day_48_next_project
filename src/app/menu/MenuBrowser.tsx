@@ -74,6 +74,7 @@ export function MenuBrowser({
 
   const { data, error, isLoading, isValidating, mutate } = useSWR(swrKey, fetcher, {
     fallbackData: initialData,
+    revalidateOnMount: false,
     keepPreviousData: true,
   });
 
