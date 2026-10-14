@@ -32,19 +32,30 @@ export async function generateMetadata({
     };
   }
 
+  const title = `${dish.name} | Addis Eats`;
+  const description = `${dish.name} - ${dish.price} ETB. ${dish.description}`;
+  const imageUrl = `${SITE_URL}${dish.image}`;
+
   return {
-    title: `${dish.name} | Addis Eats`,
-    description: `${dish.name} - ${dish.description} Priced at ${formatEtb(dish.price)}.`,
+    title,
+    description,
     openGraph: {
-      title: `${dish.name} - Authentic Ethiopian Cuisine | Addis Eats`,
-      description: dish.description,
+      title,
+      description,
       url: `/menu/${dish.id}`,
       type: "website",
+      images: [
+        {
+          url: imageUrl,
+          alt: dish.name,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${dish.name} | Addis Eats`,
-      description: dish.description,
+      title,
+      description,
+      images: [imageUrl],
     },
   };
 }
