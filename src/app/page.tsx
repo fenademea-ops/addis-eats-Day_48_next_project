@@ -150,35 +150,6 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
-      {/* Educational Scope Notice */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-stone-900 border border-stone-800 rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-1 text-center md:text-left">
-            <h3 className="text-sm font-bold text-stone-200">
-              Interactive Educational Demonstration (Days 36–50)
-            </h3>
-            <p className="text-xs text-stone-400 max-w-xl">
-              Experience URL-based pagination, client state preservation, mock auth guards, real-time tracking streams, and accessible chart tables.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3 shrink-0">
-            <Link
-              href="/dashboard"
-              className="px-4 py-2 rounded-lg text-xs font-semibold bg-stone-800 text-stone-200 hover:bg-stone-700 min-h-[44px] flex items-center"
-            >
-              Operations Dashboard
-            </Link>
-            <Link
-              href="/orders"
-              className="px-4 py-2 rounded-lg text-xs font-bold bg-amber-500 text-stone-950 hover:bg-amber-400 min-h-[44px] flex items-center"
-            >
-              Order Records
-            </Link>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
