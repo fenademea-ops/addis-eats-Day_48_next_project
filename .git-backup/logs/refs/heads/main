@@ -1,0 +1,8 @@
+0000000000000000000000000000000000000000 e865acc51a8e20d33d0a294bb58cae6122d158f2 Fena <fenademea@example.com> 1791926437 +0300	commit (initial): Complete Day 48 Next.js project
+e865acc51a8e20d33d0a294bb58cae6122d158f2 0235cce776c14132ec8296a1bda75e2c8c2c7225 Fena <fenademea@example.com> 1791927481 +0300	commit: fix(menu): add Details link on DishCard and fix dish detail image layout constraints
+0235cce776c14132ec8296a1bda75e2c8c2c7225 f5e31c699556c28989fb460b5b9eaab2f1acc3a4 Fena <fenademea@example.com> 1791928144 +0300	commit: fix(auth): start with signed-out guest state until user explicitly signs in
+f5e31c699556c28989fb460b5b9eaab2f1acc3a4 6a55820401f29ca05880666b269d536a46d2fc5a Fena <fenademea@example.com> 1791929125 +0300	commit: Complete Day 48 Next.js_project_04
+6a55820401f29ca05880666b269d536a46d2fc5a a55ef2ba4883747d629c2505ea21977b5c89fe5d Fena <fenademea@example.com> 1791930055 +0300	commit: fix(og): fix image headers and set production metadataBase for menu OG previews
+a55ef2ba4883747d629c2505ea21977b5c89fe5d 30a5753591598926dad3425ab51fe48d0e3b55ac Fena <fenademea@example.com> 1791959361 +0300	commit: Complete Day 48 Next.js_06
+30a5753591598926dad3425ab51fe48d0e3b55ac 4cfe13953a4bb4c365a82af77fa164ea33ea2d92 Fena <fenademea@example.com> 1791962447 +0300	commit: remove educational demo banner from homepage
+4cfe13953a4bb4c365a82af77fa164ea33ea2d92 1f573a723eeef7ca92c7e4329af8bc259319c131 Fena <fenademea@example.com> 1791965334 +0300	commit: perf: fix mobile CLS, optimize font-display, and tune SWR and image sizes
