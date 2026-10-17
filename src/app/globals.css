@@ -105,3 +105,9 @@ body {
 .bottom-safe {
   bottom: env(safe-area-inset-bottom, 0px);
 }
+
+/* Off-screen card content visibility optimization to defer off-screen rendering and network downloads */
+.dish-card-deferred {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 380px;
+}

@@ -219,7 +219,7 @@ export function MenuBrowser({
       {dishes.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" aria-label="Menu dishes list">
           {dishes.map((dish, idx) => (
-            <DishCard key={dish.id} dish={dish} priority={idx === 0} />
+            <DishCard key={dish.id} dish={dish} priority={idx === 0} deferred={idx >= 2} />
           ))}
         </div>
       )}

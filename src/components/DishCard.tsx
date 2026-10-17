@@ -11,9 +11,10 @@ import { useFavorites } from "@/context/FavoritesContext";
 interface DishCardProps {
   dish: Dish;
   priority?: boolean;
+  deferred?: boolean;
 }
 
-export function DishCard({ dish, priority = false }: DishCardProps) {
+export function DishCard({ dish, priority = false, deferred = false }: DishCardProps) {
   const { addItem } = useCart();
   const { isFavorite, toggleFavorite, isHydrated } = useFavorites();
   const [justAdded, setJustAdded] = useState(false);
@@ -33,11 +34,12 @@ export function DishCard({ dish, priority = false }: DishCardProps) {
   };
 
   return (
-    <article className="group relative flex flex-col bg-stone-900 border border-stone-800 rounded-xl overflow-hidden hover:border-amber-500/50 hover:shadow-xl hover:shadow-amber-500/5 transition-all duration-200">
+    <article className={`group relative flex flex-col bg-stone-900 border border-stone-800 rounded-xl overflow-hidden hover:border-amber-500/50 hover:shadow-xl hover:shadow-amber-500/5 transition-all duration-200 ${deferred ? "dish-card-deferred" : ""}`}>
       {/* Dish Image Container */}
       <div className="relative w-full aspect-4/3 bg-stone-800 overflow-hidden">
         <Link
           href={`/menu/${dish.id}`}
+          prefetch={false}
           className="absolute inset-0 z-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500"
           aria-label={`View ${dish.name} details, price ${formatEtb(dish.price)}`}
         >
@@ -45,9 +47,11 @@ export function DishCard({ dish, priority = false }: DishCardProps) {
             src={dish.image}
             alt={dish.name}
             fill
-            sizes="(max-width: 640px) 380px, (max-width: 1024px) 360px, 280px"
+            sizes="(max-width: 480px) 300px, (max-width: 640px) calc(100vw - 32px), (max-width: 1024px) 50vw, 360px"
             priority={priority}
-            quality={75}
+            fetchPriority={priority ? "high" : "auto"}
+            loading={priority ? "eager" : "lazy"}
+            quality={70}
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </Link>
@@ -122,7 +126,7 @@ export function DishCard({ dish, priority = false }: DishCardProps) {
             </h3>
           </Link>
           <span
-            className={`text-base font-bold font-mono shrink-0 ${
+            className={`text-base font-bold tabular-nums shrink-0 ${
               dish.isAvailable === false ? "text-stone-400" : "text-amber-400"
             }`}
           >

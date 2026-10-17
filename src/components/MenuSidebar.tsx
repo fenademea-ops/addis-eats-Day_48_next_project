@@ -93,6 +93,7 @@ export function MenuSidebar() {
               <Link
                 key="favorites"
                 href="/favorites"
+                prefetch={false}
                 tabIndex={0}
                 className="min-h-[44px] px-3.5 py-2.5 rounded-lg text-xs font-medium flex items-center justify-between whitespace-nowrap transition-colors text-stone-300 hover:bg-stone-800 hover:text-white border-t md:border-t border-stone-800/80 md:mt-2 md:pt-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
               >
@@ -101,7 +102,7 @@ export function MenuSidebar() {
                   <span>My Favorites</span>
                 </span>
                 <span
-                  className="text-[10px] text-amber-500 font-semibold font-mono"
+                  className="text-[10px] text-amber-500 font-semibold"
                   aria-hidden="true"
                 >
                   View →
@@ -114,6 +115,7 @@ export function MenuSidebar() {
             <Link
               key={link.key}
               href={link.href}
+              prefetch={false}
               tabIndex={0}
               aria-current={isSelected ? "page" : undefined}
               className={`min-h-[44px] px-3.5 py-2.5 rounded-lg text-xs font-medium flex items-center justify-between whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
@@ -139,12 +141,12 @@ export function MenuSidebar() {
         <p className="font-semibold text-stone-300 mb-1">Keyboard Navigation</p>
         <p>
           Use{" "}
-          <kbd className="px-1 py-0.5 bg-stone-800 rounded font-mono text-[10px]">Tab</kbd>{" "}
+          <kbd className="px-1 py-0.5 bg-stone-800 rounded font-semibold text-[10px]">Tab</kbd>{" "}
           or{" "}
-          <kbd className="px-1 py-0.5 bg-stone-800 rounded font-mono text-[10px]">↑</kbd>{" "}
-          <kbd className="px-1 py-0.5 bg-stone-800 rounded font-mono text-[10px]">↓</kbd>{" "}
+          <kbd className="px-1 py-0.5 bg-stone-800 rounded font-semibold text-[10px]">↑</kbd>{" "}
+          <kbd className="px-1 py-0.5 bg-stone-800 rounded font-semibold text-[10px]">↓</kbd>{" "}
           to cycle categories, then{" "}
-          <kbd className="px-1 py-0.5 bg-stone-800 rounded font-mono text-[10px]">Enter</kbd>{" "}
+          <kbd className="px-1 py-0.5 bg-stone-800 rounded font-semibold text-[10px]">Enter</kbd>{" "}
           to select.
         </p>
       </div>

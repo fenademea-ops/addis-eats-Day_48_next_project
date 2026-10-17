@@ -1,10 +1,19 @@
 import React, { Suspense } from "react";
+import type { Metadata } from "next";
 import { searchDishes } from "@/lib/services/mock-dish-service";
 import { MenuBrowser } from "./MenuBrowser";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Menu | Addis Eats",
-  description: "Browse authentic Ethiopian dishes with debounced search and category filtering.",
+  description: "Browse authentic Ethiopian dishes with debounced search and category filtering. Special Kitfo, Doro Wot, Tibs, and fasting Beyaynetu delivered across Addis Ababa.",
+  alternates: {
+    canonical: "/menu",
+  },
+  openGraph: {
+    title: "Menu | Addis Eats",
+    description: "Browse authentic Ethiopian dishes with debounced search and category filtering.",
+    url: "/menu",
+  },
 };
 
 export default async function MenuPage({

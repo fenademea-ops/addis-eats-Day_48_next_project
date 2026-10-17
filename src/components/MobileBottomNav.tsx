@@ -123,7 +123,7 @@ export function MobileBottomNav() {
               <div className="bg-purple-950/30 border border-purple-800/60 rounded-xl p-3 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-bold uppercase text-purple-300">Staff Portal</span>
-                  <span className="text-[10px] bg-purple-900 text-purple-200 px-1.5 py-0.5 rounded font-mono">STAFF</span>
+                  <span className="text-[10px] bg-purple-900 text-purple-200 px-1.5 py-0.5 rounded font-bold tracking-wider">STAFF</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 pt-1">
                   <Link
