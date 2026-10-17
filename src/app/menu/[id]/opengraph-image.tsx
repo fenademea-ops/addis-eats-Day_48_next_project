@@ -54,16 +54,19 @@ export default async function Image({
   const category = dish?.category || "Addis Eats Special";
   const price = dish ? `ETB ${dish.price}` : "ETB 450";
 
-  // Load the food image; fall back to the site URL for the static image
+  // Load the food image; fall back to authentic feast photo if dish or image is missing
   const siteUrl = SITE_URL;
   let imageSrc = "";
-  if (dish) {
+  if (dish?.image) {
     imageSrc = getImageSrc(dish.image);
+    if (!imageSrc) {
+      imageSrc = `${siteUrl}${dish.image}`;
+    }
   }
 
-  // If local file reading failed, use the public URL
-  if (!imageSrc && dish) {
-    imageSrc = `${siteUrl}${dish.image}`;
+  // Fallback to high-quality authentic Ethiopian food photo
+  if (!imageSrc) {
+    imageSrc = getImageSrc("/images/home.jpg") || `${siteUrl}/images/addis-eats-og.jpg`;
   }
 
   return new ImageResponse(

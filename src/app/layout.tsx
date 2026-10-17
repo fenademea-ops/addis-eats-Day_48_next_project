@@ -26,10 +26,10 @@ const siteUrl = SITE_URL;
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Addis Eats | Authentic Ethiopian Food Delivery in Addis Ababa",
+    default: "Addis Eats — Authentic Ethiopian Food",
     template: "%s | Addis Eats",
   },
-  description: "Order authentic Ethiopian dishes, traditional wots, sizzling tibs, and Buna coffee online in Addis Ababa.",
+  description: "Discover delicious Ethiopian dishes, traditional wots, sizzling tibs, and Buna coffee delivered across Addis Ababa.",
   keywords: [
     "Addis Eats",
     "Ethiopian Food",
@@ -40,28 +40,35 @@ export const metadata: Metadata = {
     "Shiro",
     "Buna Coffee",
   ],
-  authors: [{ name: "Addis Eats Team" }],
+  authors: [{ name: "Addis Eats Culinary Team" }],
+  icons: {
+    icon: "/favicon.ico",
+  },
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
     locale: "en_ET",
     url: siteUrl,
     siteName: "Addis Eats",
-    title: "Addis Eats | Authentic Ethiopian Cuisine",
-    description: "Order authentic Ethiopian cuisine delivered across Addis Ababa.",
+    title: "Addis Eats — Authentic Ethiopian Food",
+    description: "Discover delicious Ethiopian dishes and order your favorites with Addis Eats.",
     images: [
       {
-        url: "/opengraph-image",
+        url: "/images/addis-eats-og.jpg",
         width: 1200,
         height: 630,
-        alt: "Addis Eats Ethiopian Cuisine",
+        type: "image/jpeg",
+        alt: "Addis Eats — Authentic Ethiopian Food",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Addis Eats | Authentic Ethiopian Cuisine",
-    description: "Order authentic Ethiopian cuisine delivered across Addis Ababa.",
-    images: ["/opengraph-image"],
+    title: "Addis Eats — Authentic Ethiopian Food",
+    description: "Discover delicious Ethiopian dishes and order your favorites with Addis Eats.",
+    images: ["/images/addis-eats-og.jpg"],
   },
 };
 

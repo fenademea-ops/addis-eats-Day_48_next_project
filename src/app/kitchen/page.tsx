@@ -2,8 +2,12 @@ import React from "react";
 import { KitchenQueueView } from "./KitchenQueueView";
 
 export const metadata = {
-  title: "Kitchen Order Queue | Addis Eats",
-  description: "Staff interface for real-time order fulfillment states from preparation to delivery dispatch.",
+  title: "Kitchen Queue | Addis Eats",
+  description: "Staff interface for real-time kitchen preparation and courier dispatch.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function KitchenPage() {

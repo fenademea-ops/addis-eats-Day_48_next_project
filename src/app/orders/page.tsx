@@ -5,7 +5,11 @@ import OrdersLoading from "./loading";
 
 export const metadata = {
   title: "Order History | Addis Eats",
-  description: "View and track simulated customer orders with sortable columns, pagination, and CSV export.",
+  description: "View and track orders with live status updates and receipts.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default async function OrdersPage({

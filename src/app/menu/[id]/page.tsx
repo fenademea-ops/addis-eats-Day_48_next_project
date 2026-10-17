@@ -29,24 +29,40 @@ export async function generateMetadata({
     return {
       title: "Dish Not Found | Addis Eats",
       description: "The requested dish is not available on the Addis Eats menu.",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
   const title = `${dish.name} | Addis Eats`;
-  const description = `${dish.name} - ${dish.price} ETB. ${dish.description}`;
-  const imageUrl = `${SITE_URL}${dish.image}`;
+  const description = `${dish.name} — ${dish.price} ETB. ${dish.description}`;
+  const ogImageUrl = `/menu/${dish.id}/opengraph-image`;
+  const fallbackImageUrl = `${SITE_URL}${dish.image}`;
 
   return {
     title,
     description,
+    alternates: {
+      canonical: `/menu/${dish.id}`,
+    },
     openGraph: {
       title,
       description,
       url: `/menu/${dish.id}`,
       type: "website",
+      siteName: "Addis Eats",
       images: [
         {
-          url: imageUrl,
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          type: "image/png",
+          alt: `${dish.name} | Addis Eats`,
+        },
+        {
+          url: fallbackImageUrl,
           alt: dish.name,
         },
       ],
@@ -55,7 +71,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: [imageUrl],
+      images: [ogImageUrl],
     },
   };
 }

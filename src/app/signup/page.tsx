@@ -4,6 +4,14 @@ import { SignUpView } from "./SignUpView";
 export const metadata = {
   title: "Create Account | Addis Eats",
   description: "Register for an Addis Eats account to enjoy fast food delivery and save your favorites in Addis Ababa.",
+  alternates: {
+    canonical: "/signup",
+  },
+  openGraph: {
+    title: "Create Account | Addis Eats",
+    description: "Register for an Addis Eats account to enjoy fast food delivery and save your favorites in Addis Ababa.",
+    url: "/signup",
+  },
 };
 
 export default function SignUpPage() {

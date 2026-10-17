@@ -6,7 +6,11 @@ import { DayOrderCountData } from "@/components/dashboard/OrdersPerDayChart";
 
 export const metadata = {
   title: "Operations Dashboard | Addis Eats",
-  description: "Visual analytics showing revenue by neighborhood and daily order velocity in Addis Ababa.",
+  description: "Internal operations dashboard and fulfillment analytics for Addis Eats management.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function DashboardPage() {

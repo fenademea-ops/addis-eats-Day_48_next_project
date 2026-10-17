@@ -4,15 +4,32 @@ import { searchDishes } from "@/lib/services/mock-dish-service";
 import { MenuBrowser } from "./MenuBrowser";
 
 export const metadata: Metadata = {
-  title: "Menu | Addis Eats",
-  description: "Browse authentic Ethiopian dishes with debounced search and category filtering. Special Kitfo, Doro Wot, Tibs, and fasting Beyaynetu delivered across Addis Ababa.",
+  title: "Authentic Ethiopian Menu | Addis Eats",
+  description: "Explore our rich menu of traditional wots, sizzling tibs, fasting beyaynetu platters, and Buna coffee delivered across Addis Ababa.",
   alternates: {
     canonical: "/menu",
   },
   openGraph: {
-    title: "Menu | Addis Eats",
-    description: "Browse authentic Ethiopian dishes with debounced search and category filtering.",
+    type: "website",
+    title: "Authentic Ethiopian Menu | Addis Eats",
+    description: "Explore our rich menu of traditional wots, sizzling tibs, fasting beyaynetu platters, and Buna coffee delivered across Addis Ababa.",
     url: "/menu",
+    siteName: "Addis Eats",
+    images: [
+      {
+        url: "/images/menu-og.jpg",
+        width: 1200,
+        height: 630,
+        type: "image/jpeg",
+        alt: "Authentic Ethiopian Menu — Addis Eats",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Authentic Ethiopian Menu | Addis Eats",
+    description: "Explore our rich menu of traditional wots, sizzling tibs, fasting beyaynetu platters, and Buna coffee delivered across Addis Ababa.",
+    images: ["/images/menu-og.jpg"],
   },
 };
 

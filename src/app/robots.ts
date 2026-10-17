@@ -7,8 +7,9 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      allow: ["/", "/menu", "/menu/*", "/cart"],
+      allow: ["/", "/menu", "/menu/*", "/images/*", "/og-image.jpg", "/opengraph-image*"],
       disallow: [
+        "/cart",
         "/checkout",
         "/orders",
         "/orders/*",

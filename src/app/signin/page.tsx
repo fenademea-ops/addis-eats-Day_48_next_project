@@ -4,6 +4,14 @@ import { SignInView } from "./SignInView";
 export const metadata = {
   title: "Sign In | Addis Eats",
   description: "Sign in to your Addis Eats account to manage orders, favorites, and track live deliveries in Addis Ababa.",
+  alternates: {
+    canonical: "/signin",
+  },
+  openGraph: {
+    title: "Sign In | Addis Eats",
+    description: "Sign in to your Addis Eats account to manage orders, favorites, and track live deliveries in Addis Ababa.",
+    url: "/signin",
+  },
 };
 
 export default function SignInPage() {

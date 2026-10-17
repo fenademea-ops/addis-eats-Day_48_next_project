@@ -1,15 +1,42 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import type { Metadata } from "next";
 import { FIXTURE_DISHES } from "@/lib/fixtures/dishes";
 import { DishCard } from "@/components/DishCard";
-
-export const metadata = {
-  title: "Addis Eats | Authentic Ethiopian Food in Addis Ababa",
-  description: "Experience the vibrant culinary heritage of Ethiopia. From special kitfo to rich doro wot and vegan beyaynetu feasts, delivered across Addis Ababa.",
-};
-
 import { SITE_URL } from "@/lib/site-config";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "Addis Eats — Authentic Ethiopian Food",
+  },
+  description: "Discover delicious Ethiopian dishes and order your favorites with Addis Eats.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    title: "Addis Eats — Authentic Ethiopian Food",
+    description: "Discover delicious Ethiopian dishes and order your favorites with Addis Eats.",
+    url: "/",
+    siteName: "Addis Eats",
+    images: [
+      {
+        url: "/images/addis-eats-og.jpg",
+        width: 1200,
+        height: 630,
+        type: "image/jpeg",
+        alt: "Addis Eats — Authentic Ethiopian Food",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Addis Eats — Authentic Ethiopian Food",
+    description: "Discover delicious Ethiopian dishes and order your favorites with Addis Eats.",
+    images: ["/images/addis-eats-og.jpg"],
+  },
+};
 
 export default function HomePage() {
   const featuredDishes = FIXTURE_DISHES.filter((d) => d.featured).slice(0, 4);

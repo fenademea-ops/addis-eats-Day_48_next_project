@@ -1,11 +1,6 @@
 import React, { Suspense } from "react";
 import { MenuSidebar } from "@/components/MenuSidebar";
 
-export const metadata = {
-  title: "Authentic Ethiopian Menu | Addis Eats",
-  description: "Explore our rich menu of traditional wots, sizzling tibs, fasting beyaynetu platters, and Buna coffee.",
-};
-
 export default function MenuLayout({
   children,
 }: {
