@@ -175,7 +175,7 @@ export default function CheckoutPage() {
         </p>
         <Link
           href="/menu"
-          className="inline-flex items-center justify-center min-h-[44px] px-6 py-2.5 rounded-lg text-sm font-semibold bg-amber-500 text-stone-950 hover:bg-amber-400"
+          className="inline-flex items-center justify-center min-h-[44px] px-6 py-2.5 rounded-lg text-sm font-semibold bg-amber-500 text-stone-950 hover:bg-amber-400 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500"
         >
           Return to Menu
         </Link>
@@ -186,19 +186,19 @@ export default function CheckoutPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
       {/* Scope Disclaimer */}
-      <div className="mb-6 bg-stone-900 border-l-4 border-amber-500 p-4 rounded-r-xl text-xs text-stone-300">
+      <section aria-label="Demo Order Notice" className="mb-6 bg-stone-900 border-l-4 border-amber-500 p-4 rounded-r-xl text-xs text-stone-300">
         <p className="font-semibold text-amber-400 mb-0.5">Educational Demo Checkout</p>
         <p>
           This is a simulated order submission. No real payments, cards, or delivery riders are dispatched.
           The order will be created in your current browser session and available on the order tracking view.
         </p>
-      </div>
+      </section>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
         {/* Checkout Form */}
-        <div className="md:col-span-2 bg-stone-900 border border-stone-800 rounded-2xl p-6 sm:p-8 space-y-6">
+        <section aria-labelledby="checkout-form-title" className="md:col-span-2 bg-stone-900 border border-stone-800 rounded-2xl p-6 sm:p-8 space-y-6">
           <div>
-            <h1 className="text-2xl font-serif font-bold text-stone-100">
+            <h1 id="checkout-form-title" className="text-2xl font-serif font-bold text-stone-100">
               Delivery Details
             </h1>
             <p className="text-xs text-stone-400 mt-1">
@@ -207,9 +207,9 @@ export default function CheckoutPage() {
           </div>
 
           {!isAuthenticated && (
-            <div className="bg-amber-950/40 border border-amber-800/60 rounded-xl p-3.5 text-xs text-amber-200">
+            <div role="status" className="bg-amber-950/40 border border-amber-800/60 rounded-xl p-3.5 text-xs text-amber-200">
               <span>You are currently in a demo signed-out state. </span>
-              <Link href="/signin?next=/checkout" className="underline font-bold text-white">
+              <Link href="/signin?next=/checkout" className="underline font-bold text-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 rounded px-1">
                 Sign in with a demo identity
               </Link>
               <span> to complete order creation.</span>
@@ -233,7 +233,7 @@ export default function CheckoutPage() {
                 htmlFor="customerName"
                 className="block text-xs font-semibold text-stone-200 uppercase tracking-wider mb-1.5"
               >
-                Customer Full Name <span className="text-amber-500">*</span>
+                Customer Full Name <span className="text-amber-500" aria-hidden="true">*</span>
               </label>
               <input
                 id="customerName"
@@ -244,6 +244,7 @@ export default function CheckoutPage() {
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
                 onBlur={handleNameBlur}
+                aria-required="true"
                 aria-invalid={!!fieldErrors.customerName}
                 aria-describedby={fieldErrors.customerName ? "name-error" : undefined}
                 className={`w-full bg-stone-950 border rounded-xl px-4 py-3 text-sm text-stone-100 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 min-h-[44px] ${
@@ -263,7 +264,7 @@ export default function CheckoutPage() {
                 htmlFor="phone"
                 className="block text-xs font-semibold text-stone-200 uppercase tracking-wider mb-1.5"
               >
-                Phone Number <span className="text-amber-500">*</span>
+                Phone Number <span className="text-amber-500" aria-hidden="true">*</span>
               </label>
               <input
                 id="phone"
@@ -276,6 +277,7 @@ export default function CheckoutPage() {
                 onChange={(e) => setPhone(e.target.value)}
                 onBlur={handlePhoneBlur}
                 placeholder="+251 91 122 3344"
+                aria-required="true"
                 aria-invalid={!!fieldErrors.phone}
                 aria-describedby={fieldErrors.phone ? "phone-error" : undefined}
                 className={`w-full bg-stone-950 border rounded-xl px-4 py-3 text-sm text-stone-100 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 min-h-[44px] ${
@@ -318,7 +320,7 @@ export default function CheckoutPage() {
                 htmlFor="address"
                 className="block text-xs font-semibold text-stone-200 uppercase tracking-wider mb-1.5"
               >
-                Delivery Address / Landmark <span className="text-amber-500">*</span>
+                Delivery Address / Landmark <span className="text-amber-500" aria-hidden="true">*</span>
               </label>
               <textarea
                 id="address"
@@ -328,6 +330,7 @@ export default function CheckoutPage() {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 onBlur={handleAddressBlur}
+                aria-required="true"
                 aria-invalid={!!fieldErrors.address}
                 aria-describedby={fieldErrors.address ? "address-error" : undefined}
                 placeholder="House or apartment number, street name, nearest landmark"
@@ -347,11 +350,11 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full min-h-[48px] px-6 py-3.5 rounded-xl text-sm font-bold bg-amber-500 text-stone-950 hover:bg-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 flex items-center justify-center gap-2"
+                className="w-full min-h-[48px] px-6 py-3.5 rounded-xl text-sm font-bold bg-amber-500 text-stone-950 hover:bg-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 flex items-center justify-center gap-2 cursor-pointer"
               >
                 {isSubmitting ? (
                   <>
-                    <span className="w-4 h-4 border-2 border-stone-950 border-t-transparent rounded-full animate-spin" />
+                    <span className="w-4 h-4 border-2 border-stone-950 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
                     Placing Order…
                   </>
                 ) : (
@@ -360,17 +363,17 @@ export default function CheckoutPage() {
               </button>
             </div>
           </form>
-        </div>
+        </section>
 
         {/* Order Summary Sidebar */}
-        <aside className="bg-stone-900 border border-stone-800 rounded-2xl p-6 space-y-4">
+        <aside className="bg-stone-900 border border-stone-800 rounded-2xl p-6 space-y-4" aria-label="Order summary">
           <h2 className="text-sm font-semibold text-stone-200 uppercase tracking-wider pb-3 border-b border-stone-800">
             Order Items ({items.length})
           </h2>
 
-          <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
+          <div className="space-y-3 max-h-72 overflow-y-auto pr-1" role="list">
             {items.map((i) => (
-              <div key={i.dishId} className="flex items-center justify-between text-xs gap-2">
+              <div key={i.dishId} role="listitem" className="flex items-center justify-between text-xs gap-2">
                 <div className="truncate flex-1">
                   <span className="font-medium text-stone-200">{i.name}</span>
                   <span className="text-stone-400 ml-1.5">× {i.quantity}</span>

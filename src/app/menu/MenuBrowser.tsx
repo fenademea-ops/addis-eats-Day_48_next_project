@@ -96,8 +96,8 @@ export function MenuBrowser({
     <div className="space-y-6">
       {/* Search Input Bar */}
       <div className="relative">
-        <label htmlFor="dish-search" className="sr-only">
-          Search dishes by name, description, or ingredients
+        <label htmlFor="dish-search" className="block text-xs font-semibold uppercase tracking-wider text-stone-300 mb-1.5">
+          Search Dishes
         </label>
         <div className="relative">
           <input
@@ -106,9 +106,10 @@ export function MenuBrowser({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search wot, tibs, coffee, shiro, ingredients..."
+            aria-describedby="search-summary"
             className="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 pl-11 text-stone-100 placeholder-stone-400 text-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:border-transparent transition-all shadow-xs"
           />
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400" aria-hidden="true">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
@@ -119,15 +120,15 @@ export function MenuBrowser({
             </svg>
           </div>
           {(isValidating || isPending) && (
-            <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center">
+            <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center" aria-hidden="true">
               <span className="w-4 h-4 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
             </div>
           )}
         </div>
       </div>
 
-      {/* Active Filter Badges & Summary */}
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-stone-300">
+      {/* Active Filter Badges & Summary (Announced to screen readers on update) */}
+      <div id="search-summary" role="status" aria-live="polite" className="flex flex-wrap items-center justify-between gap-2 text-xs text-stone-300">
         <div>
           <span>
             Showing <strong className="text-stone-100">{dishes.length}</strong> of{" "}
@@ -148,16 +149,16 @@ export function MenuBrowser({
         <div className="flex items-center gap-3">
           <Link
             href="/favorites"
-            className="text-stone-200 hover:text-red-400 transition-colors font-medium flex items-center gap-1"
+            className="text-stone-200 hover:text-red-400 transition-colors font-medium flex items-center gap-1 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 rounded p-1"
           >
-            <span className="text-red-400">❤️</span>
+            <span className="text-red-400" aria-hidden="true">❤️</span>
             <span>View Saved Favorites</span>
           </Link>
 
           {(currentCategory !== "All" || currentQuery) && (
             <Link
               href="/menu"
-              className="text-amber-400 hover:text-amber-300 transition-colors font-medium ml-2 border-l border-stone-800 pl-3"
+              className="text-amber-400 hover:text-amber-300 transition-colors font-medium ml-2 border-l border-stone-800 pl-3 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 rounded p-1"
             >
               Clear filters
             </Link>
@@ -167,7 +168,7 @@ export function MenuBrowser({
 
       {/* Loading Skeleton State */}
       {isLoading && !data && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse" aria-busy="true">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i} className="bg-stone-900 border border-stone-800 rounded-xl h-80" />
           ))}
@@ -176,7 +177,7 @@ export function MenuBrowser({
 
       {/* Error / Retry State */}
       {error && (
-        <div className="bg-red-950/40 border border-red-800/60 rounded-xl p-8 text-center space-y-3">
+        <div role="alert" className="bg-red-950/40 border border-red-800/60 rounded-xl p-8 text-center space-y-3">
           <p className="text-red-300 text-sm font-semibold">
             Unable to load dishes from mock service.
           </p>
@@ -186,7 +187,7 @@ export function MenuBrowser({
           <button
             type="button"
             onClick={() => mutate()}
-            className="mt-2 px-4 py-2 bg-red-700 hover:bg-red-600 text-white text-xs font-semibold rounded-lg transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-400 min-h-[44px]"
+            className="mt-2 px-4 py-2 bg-red-700 hover:bg-red-600 text-white text-xs font-semibold rounded-lg transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-400 min-h-[44px] cursor-pointer"
           >
             Try Again
           </button>
@@ -196,18 +197,18 @@ export function MenuBrowser({
       {/* Empty State */}
       {!isLoading && !error && dishes.length === 0 && (
         <div className="bg-stone-900/60 border border-stone-800 rounded-xl p-12 text-center space-y-4">
-          <div className="w-12 h-12 mx-auto rounded-full bg-stone-800 flex items-center justify-center text-amber-500 text-xl">
+          <div className="w-12 h-12 mx-auto rounded-full bg-stone-800 flex items-center justify-center text-amber-500 text-xl" aria-hidden="true">
             🔍
           </div>
-          <h3 className="text-base font-semibold text-stone-200">
+          <h2 className="text-base font-semibold text-stone-200">
             No dishes match your selection
-          </h3>
+          </h2>
           <p className="text-xs text-stone-400 max-w-sm mx-auto">
             Try adjusting your search query or selecting a different category from the sidebar.
           </p>
           <Link
             href="/menu"
-            className="inline-block px-4 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-medium rounded-lg transition-colors min-h-[44px] flex items-center justify-center mx-auto w-fit"
+            className="inline-block px-4 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-medium rounded-lg transition-colors min-h-[44px] flex items-center justify-center mx-auto w-fit focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500"
           >
             Reset Menu Filters
           </Link>
@@ -216,7 +217,7 @@ export function MenuBrowser({
 
       {/* Loaded Dishes Grid */}
       {dishes.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" aria-label="Menu dishes list">
           {dishes.map((dish, idx) => (
             <DishCard key={dish.id} dish={dish} priority={idx === 0} />
           ))}
@@ -240,7 +241,7 @@ export function MenuBrowser({
             </Link>
           ) : (
             <span
-              className="min-h-[44px] min-w-[44px] px-3 py-2 rounded-lg text-xs font-medium bg-stone-900/50 border border-stone-800/40 text-stone-600 cursor-not-allowed flex items-center justify-center"
+              className="min-h-[44px] min-w-[44px] px-3 py-2 rounded-lg text-xs font-medium bg-stone-900/50 border border-stone-800/40 text-stone-600 cursor-not-allowed flex items-center justify-center select-none"
               aria-disabled="true"
             >
               ← Prev
@@ -278,7 +279,7 @@ export function MenuBrowser({
             </Link>
           ) : (
             <span
-              className="min-h-[44px] min-w-[44px] px-3 py-2 rounded-lg text-xs font-medium bg-stone-900/50 border border-stone-800/40 text-stone-600 cursor-not-allowed flex items-center justify-center"
+              className="min-h-[44px] min-w-[44px] px-3 py-2 rounded-lg text-xs font-medium bg-stone-900/50 border border-stone-800/40 text-stone-600 cursor-not-allowed flex items-center justify-center select-none"
               aria-disabled="true"
             >
               Next →

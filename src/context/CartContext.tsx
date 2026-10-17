@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useMemo, useRef } from "react";
+import React, { createContext, useContext, useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Dish } from "@/lib/fixtures/dishes";
 import { useHydrated } from "@/lib/use-hydrated";
 
@@ -22,6 +22,8 @@ interface CartContextType {
   subtotal: number; // Integer ETB
   totalCount: number;
   isHydrated: boolean;
+  announcement: string;
+  setAnnouncement: (msg: string) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -31,7 +33,28 @@ const CART_STORAGE_KEY = "addis_eats_cart";
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const isHydrated = useHydrated();
   const [items, setItems] = useState<CartItem[]>([]);
+  const [announcement, setAnnouncementState] = useState<string>("");
   const isInitialLoadDone = useRef(false);
+  const announcementTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const setAnnouncement = useCallback((msg: string) => {
+    setAnnouncementState(msg);
+    if (announcementTimerRef.current) {
+      clearTimeout(announcementTimerRef.current);
+    }
+    announcementTimerRef.current = setTimeout(() => {
+      setAnnouncementState("");
+    }, 4000);
+  }, []);
+
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => {
+      if (announcementTimerRef.current) {
+        clearTimeout(announcementTimerRef.current);
+      }
+    };
+  }, []);
 
   // Load saved cart from localStorage on mount (hydration safe)
   useEffect(() => {
@@ -69,20 +92,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
    */
   const addItem = (dish: Dish, quantity: number = 1) => {
     if (dish.isAvailable === false) {
-      return; // Cannot add sold-out items to cart
+      setAnnouncement(`${dish.name} is currently sold out and cannot be added to cart.`);
+      return;
     }
     const qtyToAdd = Math.max(1, Math.floor(quantity));
     setItems((prev) => {
       const existingIndex = prev.findIndex((i) => i.dishId === dish.id);
       if (existingIndex > -1) {
         const next = [...prev];
+        const newQty = next[existingIndex].quantity + qtyToAdd;
         next[existingIndex] = {
           ...next[existingIndex],
-          quantity: next[existingIndex].quantity + qtyToAdd,
+          quantity: newQty,
         };
+        setAnnouncement(`Updated ${dish.name} quantity to ${newQty}. Total items in cart: ${next.reduce((a, b) => a + b.quantity, 0)}.`);
         return next;
       }
-      return [
+      const newItems = [
         ...prev,
         {
           dishId: dish.id,
@@ -93,6 +119,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           category: dish.category,
         },
       ];
+      setAnnouncement(`Added ${qtyToAdd} ${dish.name} to cart. Total items: ${newItems.reduce((a, b) => a + b.quantity, 0)}.`);
+      return newItems;
     });
   };
 
@@ -102,9 +130,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const updateQuantity = (dishId: string, quantity: number) => {
     const targetQty = Math.floor(quantity);
     setItems((prev) => {
+      const targetItem = prev.find((i) => i.dishId === dishId);
+      const itemName = targetItem?.name || "Item";
       if (targetQty <= 0) {
-        return prev.filter((i) => i.dishId !== dishId);
+        const remaining = prev.filter((i) => i.dishId !== dishId);
+        setAnnouncement(`Removed ${itemName} from cart.`);
+        return remaining;
       }
+      setAnnouncement(`Updated ${itemName} quantity to ${targetQty}.`);
       return prev.map((item) =>
         item.dishId === dishId ? { ...item, quantity: targetQty } : item
       );
@@ -115,7 +148,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
    * Removes an item from the cart completely.
    */
   const removeItem = (dishId: string) => {
-    setItems((prev) => prev.filter((i) => i.dishId !== dishId));
+    setItems((prev) => {
+      const targetItem = prev.find((i) => i.dishId === dishId);
+      const itemName = targetItem?.name || "Item";
+      setAnnouncement(`Removed ${itemName} from cart.`);
+      return prev.filter((i) => i.dishId !== dishId);
+    });
   };
 
   /**
@@ -123,6 +161,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
    */
   const clearCart = () => {
     setItems([]);
+    setAnnouncement("Cart has been cleared.");
   };
 
   /**
@@ -150,6 +189,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         subtotal,
         totalCount,
         isHydrated,
+        announcement,
+        setAnnouncement,
       }}
     >
       {children}

@@ -20,7 +20,6 @@ export function DishCard({ dish, priority = false }: DishCardProps) {
   const isFav = isHydrated && isFavorite(dish.id);
 
   const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // Stop propagation so clicking the button adds to cart without triggering card navigation
     e.stopPropagation();
     addItem(dish, 1);
     setJustAdded(true);
@@ -40,7 +39,7 @@ export function DishCard({ dish, priority = false }: DishCardProps) {
         <Link
           href={`/menu/${dish.id}`}
           className="absolute inset-0 z-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500"
-          aria-label={`View ${dish.name} details`}
+          aria-label={`View ${dish.name} details, price ${formatEtb(dish.price)}`}
         >
           <Image
             src={dish.image}
@@ -63,18 +62,19 @@ export function DishCard({ dish, priority = false }: DishCardProps) {
         <button
           type="button"
           onClick={handleFavoriteClick}
-          className={`absolute top-2.5 right-2.5 z-30 min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-full backdrop-blur-md transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 ${
+          className={`absolute top-2.5 right-2.5 z-30 min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-full backdrop-blur-md transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 cursor-pointer ${
             isFav
               ? "bg-red-500/20 text-red-400 border border-red-500/60 scale-105 shadow-md shadow-red-500/20"
               : "bg-stone-900/80 text-stone-400 hover:text-red-400 hover:bg-stone-900 border border-stone-700/60"
           }`}
           aria-label={isFav ? `Remove ${dish.name} from favorites` : `Save ${dish.name} to favorites`}
-          title={isFav ? "Saved to Favorites" : "Add to Favorites"}
+          aria-pressed={isFav}
         >
           <svg
             className={`w-4 h-4 transition-transform ${isFav ? "fill-red-500 stroke-red-500" : "fill-none stroke-current"}`}
             viewBox="0 0 24 24"
             strokeWidth={2}
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -87,15 +87,15 @@ export function DishCard({ dish, priority = false }: DishCardProps) {
         {dish.spicy && (
           <span
             className="pointer-events-none absolute top-12 left-3 bg-red-950/85 text-red-300 text-xs font-medium px-2 py-0.5 rounded-md border border-red-800/50 z-20"
-            title="Spicy dish"
+            aria-label="Spicy dish"
           >
-            🌶️ Spicy
+            <span aria-hidden="true">🌶️ </span>Spicy
           </span>
         )}
 
         {/* Professional Sold Out Image Overlay */}
         {dish.isAvailable === false && (
-          <div className="pointer-events-none absolute inset-0 bg-stone-950/75 backdrop-blur-[2px] flex items-center justify-center z-10">
+          <div className="pointer-events-none absolute inset-0 bg-stone-950/75 backdrop-blur-[2px] flex items-center justify-center z-10" aria-hidden="true">
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-red-950/90 text-red-200 border border-red-800/90 shadow-lg">
               <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
               Sold Out
@@ -138,11 +138,11 @@ export function DishCard({ dish, priority = false }: DishCardProps) {
           {/* Direct View Details Link */}
           <Link
             href={`/menu/${dish.id}`}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-stone-300 hover:text-amber-400 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 rounded px-1.5 py-1 transition-colors"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-stone-300 hover:text-amber-400 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 rounded px-1.5 py-1 transition-colors min-h-[44px]"
             aria-label={`View details of ${dish.name}`}
           >
             <span>Details</span>
-            <svg className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </Link>
@@ -155,7 +155,7 @@ export function DishCard({ dish, priority = false }: DishCardProps) {
               className="min-h-[44px] px-3.5 py-2 rounded-lg text-xs font-semibold bg-stone-800/80 text-stone-400 cursor-not-allowed border border-stone-700/60 flex items-center gap-1.5 select-none"
               aria-label={`${dish.name} is currently sold out`}
             >
-              <svg className="w-3.5 h-3.5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-3.5 h-3.5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
               </svg>
               Sold Out
@@ -164,23 +164,23 @@ export function DishCard({ dish, priority = false }: DishCardProps) {
             <button
               type="button"
               onClick={handleAddClick}
-              className={`min-h-[44px] min-w-[44px] px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 shadow-sm ${
+              className={`min-h-[44px] min-w-[44px] px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 shadow-sm cursor-pointer ${
                 justAdded
                   ? "bg-emerald-600 text-white"
                   : "bg-amber-500 text-stone-950 hover:bg-amber-400 active:scale-95"
               }`}
-              aria-label={`Add ${dish.name} to cart`}
+              aria-label={`Add ${dish.name} to cart, ${formatEtb(dish.price)}`}
             >
               {justAdded ? (
                 <>
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   Added!
                 </>
               ) : (
                 <>
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
                   Add

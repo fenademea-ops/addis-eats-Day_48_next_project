@@ -76,9 +76,16 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-stone-950 text-stone-100 selection:bg-amber-500 selection:text-stone-950">
+        {/* Skip to Main Content Link for Keyboard Users */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2.5 focus:bg-amber-500 focus:text-stone-950 focus:font-bold focus:text-xs focus:rounded-lg focus:shadow-2xl focus:ring-2 focus:ring-stone-950 focus:outline-hidden"
+        >
+          Skip to main content
+        </a>
         <ClientProviders>
           <Navbar />
-          <main id="main-content" className="flex-1 flex flex-col pb-20 lg:pb-0">
+          <main id="main-content" tabIndex={-1} className="flex-1 flex flex-col pb-20 lg:pb-0 focus:outline-hidden">
             {children}
           </main>
           <Footer />

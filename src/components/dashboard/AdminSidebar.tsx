@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
@@ -13,6 +13,9 @@ export function AdminSidebar({ onTabChange }: AdminSidebarProps) {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const mobileTriggerRef = useRef<HTMLButtonElement>(null);
+  const mobileCloseRef = useRef<HTMLButtonElement>(null);
+  const mobileDrawerRef = useRef<HTMLDivElement>(null);
 
   // Close mobile drawer on route change
   const [prevPath, setPrevPath] = useState(pathname);
@@ -21,16 +24,50 @@ export function AdminSidebar({ onTabChange }: AdminSidebarProps) {
     setMobileOpen(false);
   }
 
-  // Handle escape key
+  // Handle escape key and focus trap
   useEffect(() => {
+    if (!mobileOpen) return;
+
+    setTimeout(() => {
+      mobileCloseRef.current?.focus();
+    }, 50);
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && mobileOpen) {
+      if (e.key === "Escape") {
         setMobileOpen(false);
+        mobileTriggerRef.current?.focus();
+        return;
+      }
+
+      if (e.key === "Tab" && mobileDrawerRef.current) {
+        const focusables = Array.from(
+          mobileDrawerRef.current.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          )
+        ).filter((el) => !el.hasAttribute("disabled"));
+
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     };
+
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [mobileOpen]);
+
+  const closeMobile = () => {
+    setMobileOpen(false);
+    mobileTriggerRef.current?.focus();
+  };
 
   const navItems = [
     {
@@ -38,7 +75,7 @@ export function AdminSidebar({ onTabChange }: AdminSidebarProps) {
       label: "Overview",
       href: "/dashboard",
       icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
         </svg>
       ),
@@ -48,7 +85,7 @@ export function AdminSidebar({ onTabChange }: AdminSidebarProps) {
       label: "Kitchen Queue",
       href: "/kitchen",
       icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       ),
@@ -58,7 +95,7 @@ export function AdminSidebar({ onTabChange }: AdminSidebarProps) {
       label: "Order Records",
       href: "/orders",
       icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
         </svg>
       ),
@@ -68,7 +105,7 @@ export function AdminSidebar({ onTabChange }: AdminSidebarProps) {
       label: "Menu Management",
       href: "/kitchen?tab=menu",
       icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
         </svg>
       ),
@@ -82,12 +119,12 @@ export function AdminSidebar({ onTabChange }: AdminSidebarProps) {
     return pathname === item.href;
   };
 
-  const sidebarContent = (
+  const getSidebarContent = (isMobile: boolean) => (
     <div className="flex flex-col h-full bg-stone-900 border-r border-stone-800 text-stone-200">
       {/* Workspace Brand Header */}
       <div className="p-6 border-b border-stone-800 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold text-sm shadow-md">
+          <div className="w-9 h-9 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold text-sm shadow-md" aria-hidden="true">
             AE
           </div>
           <div>
@@ -100,20 +137,23 @@ export function AdminSidebar({ onTabChange }: AdminSidebarProps) {
           </div>
         </div>
         {/* Mobile close button */}
-        <button
-          type="button"
-          onClick={() => setMobileOpen(false)}
-          className="lg:hidden p-1.5 rounded-lg text-stone-400 hover:text-white bg-stone-800 hover:bg-stone-700 min-h-[44px] min-w-[44px] flex items-center justify-center"
-          aria-label="Close admin menu"
-        >
-          ✕
-        </button>
+        {isMobile && (
+          <button
+            ref={mobileCloseRef}
+            type="button"
+            onClick={closeMobile}
+            className="lg:hidden p-1.5 rounded-lg text-stone-400 hover:text-white bg-stone-800 hover:bg-stone-700 min-h-[44px] min-w-[44px] flex items-center justify-center focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 cursor-pointer"
+            aria-label="Close admin menu"
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       {/* User Context Strip */}
       <div className="px-6 py-4 border-b border-stone-800/80 bg-stone-950/40">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-purple-400 text-stone-950 font-bold text-xs flex items-center justify-center shadow-xs">
+          <div className="w-8 h-8 rounded-full bg-purple-400 text-stone-950 font-bold text-xs flex items-center justify-center shadow-xs" aria-hidden="true">
             {user?.name?.slice(0, 2).toUpperCase() || "ST"}
           </div>
           <div className="min-w-0 flex-1">
@@ -138,16 +178,16 @@ export function AdminSidebar({ onTabChange }: AdminSidebarProps) {
               href={item.href}
               onClick={() => {
                 if (onTabChange) onTabChange(item.id);
-                setMobileOpen(false);
+                if (isMobile) closeMobile();
               }}
-              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all min-h-[44px] ${
+              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all min-h-[44px] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 ${
                 active
                   ? "bg-purple-950/80 text-purple-300 font-bold border border-purple-800/80 shadow-xs"
                   : "text-stone-300 hover:bg-stone-800/70 hover:text-white"
               }`}
               aria-current={active ? "page" : undefined}
             >
-              <span className={active ? "text-purple-400" : "text-stone-400"}>
+              <span className={active ? "text-purple-400" : "text-stone-400"} aria-hidden="true">
                 {item.icon}
               </span>
               <span>{item.label}</span>
@@ -160,14 +200,14 @@ export function AdminSidebar({ onTabChange }: AdminSidebarProps) {
       <div className="p-4 border-t border-stone-800 space-y-2 bg-stone-950/20">
         <Link
           href="/"
-          className="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl text-xs font-semibold text-stone-300 hover:text-white bg-stone-800/70 hover:bg-stone-800 transition-colors border border-stone-700/60 min-h-[44px]"
+          className="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl text-xs font-semibold text-stone-300 hover:text-white bg-stone-800/70 hover:bg-stone-800 transition-colors border border-stone-700/60 min-h-[44px] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500"
         >
           <span>← Back to Storefront</span>
         </Link>
         <button
           type="button"
           onClick={() => signOut()}
-          className="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl text-xs font-semibold text-red-300 hover:text-red-200 bg-red-950/30 hover:bg-red-950/60 transition-colors border border-red-900/50 min-h-[44px] cursor-pointer"
+          className="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl text-xs font-semibold text-red-300 hover:text-red-200 bg-red-950/30 hover:bg-red-950/60 transition-colors border border-red-900/50 min-h-[44px] cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-400"
         >
           <span>Sign Out</span>
         </button>
@@ -180,7 +220,7 @@ export function AdminSidebar({ onTabChange }: AdminSidebarProps) {
       {/* Mobile Menu Trigger Header for Tablets & Phones (< 1024px) */}
       <div className="lg:hidden w-full bg-stone-900 border-b border-stone-800 p-4 flex items-center justify-between mb-4 rounded-2xl shadow-sm">
         <div className="flex items-center gap-2.5">
-          <span className="w-7 h-7 rounded-lg bg-purple-600 text-white flex items-center justify-center font-bold text-xs">
+          <span className="w-7 h-7 rounded-lg bg-purple-600 text-white flex items-center justify-center font-bold text-xs" aria-hidden="true">
             AE
           </span>
           <span className="font-serif font-bold text-sm text-stone-100">
@@ -188,13 +228,15 @@ export function AdminSidebar({ onTabChange }: AdminSidebarProps) {
           </span>
         </div>
         <button
+          ref={mobileTriggerRef}
           type="button"
           onClick={() => setMobileOpen(true)}
-          className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-stone-800 text-stone-200 hover:text-white hover:bg-stone-700 flex items-center gap-1.5 min-h-[44px] border border-stone-700/80 cursor-pointer"
+          className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-stone-800 text-stone-200 hover:text-white hover:bg-stone-700 flex items-center gap-1.5 min-h-[44px] border border-stone-700/80 cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500"
           aria-expanded={mobileOpen}
+          aria-haspopup="dialog"
           aria-label="Open administration sidebar"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
           <span>Admin Menu</span>
@@ -203,23 +245,24 @@ export function AdminSidebar({ onTabChange }: AdminSidebarProps) {
 
       {/* Desktop Static Sidebar (lg: 1024px and up) */}
       <aside className="hidden lg:block w-64 shrink-0 rounded-2xl overflow-hidden shadow-xl sticky top-24 h-[calc(100vh-8rem)]">
-        {sidebarContent}
+        {getSidebarContent(false)}
       </aside>
 
       {/* Mobile Drawer Modal Overlay */}
       {mobileOpen && (
         <div
           className="lg:hidden fixed inset-0 z-50 flex bg-stone-950/80 backdrop-blur-sm animate-in fade-in duration-200"
-          onClick={() => setMobileOpen(false)}
+          onClick={closeMobile}
         >
           <div
+            ref={mobileDrawerRef}
             className="w-72 max-w-[85vw] h-full shadow-2xl animate-in slide-in-from-left duration-200"
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
             aria-label="Admin Navigation Drawer"
           >
-            {sidebarContent}
+            {getSidebarContent(true)}
           </div>
         </div>
       )}

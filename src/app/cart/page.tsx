@@ -21,7 +21,7 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center space-y-6">
-        <div className="w-16 h-16 mx-auto rounded-full bg-stone-900 border border-stone-800 flex items-center justify-center text-2xl text-amber-500">
+        <div className="w-16 h-16 mx-auto rounded-full bg-stone-900 border border-stone-800 flex items-center justify-center text-2xl text-amber-500" aria-hidden="true">
           🛒
         </div>
         <div>
@@ -58,7 +58,8 @@ export default function CartPage() {
         <button
           type="button"
           onClick={clearCart}
-          className="text-xs text-stone-400 hover:text-red-400 transition-colors p-2 rounded-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-400 min-h-[44px] flex items-center"
+          className="text-xs text-stone-400 hover:text-red-400 transition-colors p-2 rounded-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-400 min-h-[44px] flex items-center cursor-pointer"
+          aria-label="Clear all items from shopping cart"
         >
           Clear Cart
         </button>
@@ -66,12 +67,13 @@ export default function CartPage() {
 
       <div className="space-y-6">
         {/* Cart Item Rows */}
-        <div className="space-y-3">
+        <div className="space-y-3" role="list" aria-label="Items in your cart">
           {items.map((item) => {
             const lineTotal = item.price * item.quantity;
             return (
               <div
                 key={item.dishId}
+                role="listitem"
                 className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-stone-900 border border-stone-800 rounded-xl"
               >
                 {/* Thumbnail & Title */}
@@ -88,7 +90,7 @@ export default function CartPage() {
                   <div>
                     <Link
                       href={`/menu/${item.dishId}`}
-                      className="text-sm font-semibold text-stone-100 hover:text-amber-400 transition-colors"
+                      className="text-sm font-semibold text-stone-100 hover:text-amber-400 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 rounded"
                     >
                       {item.name}
                     </Link>
@@ -101,19 +103,19 @@ export default function CartPage() {
                 {/* Quantity Controls & Line Total */}
                 <div className="flex items-center justify-between sm:justify-end gap-6 border-t sm:border-t-0 pt-3 sm:pt-0 border-stone-800">
                   {/* Stepper */}
-                  <div className="flex items-center border border-stone-700 bg-stone-950 rounded-lg min-h-[44px] p-0.5">
+                  <div className="flex items-center border border-stone-700 bg-stone-950 rounded-lg min-h-[44px] p-0.5" role="group" aria-label={`Quantity controls for ${item.name}`}>
                     <button
                       type="button"
                       onClick={() => updateQuantity(item.dishId, item.quantity - 1)}
-                      className="min-h-[40px] min-w-[40px] rounded-md text-stone-300 hover:text-white hover:bg-stone-800 flex items-center justify-center transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500"
+                      className="min-h-[40px] min-w-[40px] rounded-md text-stone-300 hover:text-white hover:bg-stone-800 flex items-center justify-center transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 cursor-pointer"
                       aria-label={`Decrease quantity of ${item.name}`}
                     >
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                       </svg>
                     </button>
                     <span
-                      className="px-3 text-xs font-bold font-mono text-stone-100"
+                      className="px-3 text-xs font-bold font-mono text-stone-100 min-w-[28px] text-center"
                       aria-label={`Quantity: ${item.quantity}`}
                     >
                       {item.quantity}
@@ -121,17 +123,17 @@ export default function CartPage() {
                     <button
                       type="button"
                       onClick={() => updateQuantity(item.dishId, item.quantity + 1)}
-                      className="min-h-[40px] min-w-[40px] rounded-md text-stone-300 hover:text-white hover:bg-stone-800 flex items-center justify-center transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500"
+                      className="min-h-[40px] min-w-[40px] rounded-md text-stone-300 hover:text-white hover:bg-stone-800 flex items-center justify-center transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 cursor-pointer"
                       aria-label={`Increase quantity of ${item.name}`}
                     >
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                       </svg>
                     </button>
                   </div>
 
                   {/* Line Total */}
-                  <span className="text-sm font-bold font-mono text-stone-200 min-w-[80px] text-right">
+                  <span className="text-sm font-bold font-mono text-stone-200 min-w-[80px] text-right" aria-label={`Line total: ${formatEtb(lineTotal)}`}>
                     {formatEtb(lineTotal)}
                   </span>
 
@@ -139,10 +141,10 @@ export default function CartPage() {
                   <button
                     type="button"
                     onClick={() => removeItem(item.dishId)}
-                    className="text-stone-400 hover:text-red-400 transition-colors p-2 rounded-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-400 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    className="text-stone-400 hover:text-red-400 transition-colors p-2 rounded-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-400 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
                     aria-label={`Remove ${item.name} from cart`}
                   >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
@@ -153,7 +155,7 @@ export default function CartPage() {
         </div>
 
         {/* Order Summary Card */}
-        <div className="bg-stone-900 border border-stone-800 rounded-xl p-6 space-y-4">
+        <aside className="bg-stone-900 border border-stone-800 rounded-xl p-6 space-y-4" aria-label="Cart Summary">
           <div className="flex items-center justify-between text-base font-bold text-stone-100">
             <span>Subtotal</span>
             <span className="text-xl font-mono text-amber-400">{formatEtb(subtotal)}</span>
@@ -166,7 +168,7 @@ export default function CartPage() {
           <div className="pt-4 border-t border-stone-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
             <Link
               href="/menu"
-              className="text-xs text-stone-300 hover:text-amber-400 transition-colors min-h-[44px] flex items-center justify-center"
+              className="text-xs text-stone-300 hover:text-amber-400 transition-colors min-h-[44px] flex items-center justify-center focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 rounded p-1"
             >
               ← Continue Browsing Menu
             </Link>
@@ -178,7 +180,7 @@ export default function CartPage() {
               Proceed to Demo Checkout →
             </Link>
           </div>
-        </div>
+        </aside>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/context/CartContext";
@@ -12,6 +12,9 @@ export function MobileBottomNav() {
   const { totalCount, isHydrated: cartHydrated } = useCart();
   const { user, isAuthenticated, isStaff, isHydrated: authHydrated, switchUser, signOut } = useAuth();
   const [profileDrawerOpen, setProfileDrawerOpen] = useState(false);
+  const drawerTriggerRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
 
   // Close drawer on path change
   const [prevPath, setPrevPath] = useState(pathname);
@@ -20,16 +23,51 @@ export function MobileBottomNav() {
     setProfileDrawerOpen(false);
   }
 
-  // Handle escape key
+  // Handle escape key and focus trap inside modal drawer
   useEffect(() => {
+    if (!profileDrawerOpen) return;
+
+    // Focus close button on open
+    setTimeout(() => {
+      closeBtnRef.current?.focus();
+    }, 50);
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && profileDrawerOpen) {
+      if (e.key === "Escape") {
         setProfileDrawerOpen(false);
+        drawerTriggerRef.current?.focus();
+        return;
+      }
+
+      if (e.key === "Tab" && drawerRef.current) {
+        const focusables = Array.from(
+          drawerRef.current.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          )
+        ).filter((el) => !el.hasAttribute("disabled"));
+
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     };
+
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [profileDrawerOpen]);
+
+  const closeDrawer = () => {
+    setProfileDrawerOpen(false);
+    drawerTriggerRef.current?.focus();
+  };
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -44,23 +82,24 @@ export function MobileBottomNav() {
       {profileDrawerOpen && (
         <div
           className="lg:hidden fixed inset-0 z-50 flex flex-col justify-end bg-stone-950/80 backdrop-blur-sm animate-in fade-in duration-200"
-          onClick={() => setProfileDrawerOpen(false)}
+          onClick={closeDrawer}
         >
           <div
+            ref={drawerRef}
             className="w-full max-w-md mx-auto bg-stone-900 border-t border-stone-800 rounded-t-3xl p-6 space-y-5 pb-safe shadow-2xl animate-in slide-in-from-bottom duration-200 max-h-[85vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
-            aria-label="Account and Profile Menu"
+            aria-labelledby="mobile-profile-title"
           >
             {/* Header / Handle */}
             <div className="flex items-center justify-between pb-2 border-b border-stone-800">
               <div className="flex items-center gap-2">
-                <span className="w-8 h-8 rounded-full bg-amber-500 text-stone-950 flex items-center justify-center font-bold text-sm">
+                <span className="w-8 h-8 rounded-full bg-amber-500 text-stone-950 flex items-center justify-center font-bold text-sm" aria-hidden="true">
                   {authHydrated && isAuthenticated ? user?.name.slice(0, 1) : "👤"}
                 </span>
                 <div>
-                  <h2 className="text-sm font-bold text-stone-100">
+                  <h2 id="mobile-profile-title" className="text-sm font-bold text-stone-100">
                     {authHydrated && isAuthenticated ? user?.name : "Account & Profile"}
                   </h2>
                   <p className="text-[11px] text-stone-400">
@@ -69,9 +108,10 @@ export function MobileBottomNav() {
                 </div>
               </div>
               <button
+                ref={closeBtnRef}
                 type="button"
-                onClick={() => setProfileDrawerOpen(false)}
-                className="w-8 h-8 rounded-full bg-stone-800 text-stone-400 hover:text-white flex items-center justify-center text-sm"
+                onClick={closeDrawer}
+                className="w-8 h-8 rounded-full bg-stone-800 text-stone-400 hover:text-white flex items-center justify-center text-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500"
                 aria-label="Close profile menu"
               >
                 ✕
@@ -89,16 +129,16 @@ export function MobileBottomNav() {
                   <Link
                     href="/dashboard"
                     prefetch={false}
-                    onClick={() => setProfileDrawerOpen(false)}
-                    className="flex items-center justify-center py-2 px-3 rounded-lg text-xs font-semibold bg-purple-900/60 hover:bg-purple-800 text-purple-100 text-center transition-colors"
+                    onClick={closeDrawer}
+                    className="flex items-center justify-center py-2 px-3 rounded-lg text-xs font-semibold bg-purple-900/60 hover:bg-purple-800 text-purple-100 text-center transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500"
                   >
                     Admin Dashboard
                   </Link>
                   <Link
                     href="/kitchen"
                     prefetch={false}
-                    onClick={() => setProfileDrawerOpen(false)}
-                    className="flex items-center justify-center py-2 px-3 rounded-lg text-xs font-semibold bg-purple-900/60 hover:bg-purple-800 text-purple-100 text-center transition-colors"
+                    onClick={closeDrawer}
+                    className="flex items-center justify-center py-2 px-3 rounded-lg text-xs font-semibold bg-purple-900/60 hover:bg-purple-800 text-purple-100 text-center transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500"
                   >
                     Kitchen Queue
                   </Link>
@@ -117,9 +157,9 @@ export function MobileBottomNav() {
                   type="button"
                   onClick={() => {
                     switchUser("customer");
-                    setProfileDrawerOpen(false);
+                    closeDrawer();
                   }}
-                  className={`w-full flex items-center justify-between p-3 rounded-xl border text-left transition-all ${
+                  className={`w-full flex items-center justify-between p-3 rounded-xl border text-left transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 ${
                     authHydrated && user?.id === DEMO_USERS.customer.id
                       ? "bg-stone-800 border-amber-500 text-amber-300"
                       : "bg-stone-950/70 border-stone-800 text-stone-200 hover:bg-stone-800/80"
@@ -130,7 +170,7 @@ export function MobileBottomNav() {
                     <p className="text-[11px] text-stone-400">Customer • Bole neighborhood</p>
                   </div>
                   {authHydrated && user?.id === DEMO_USERS.customer.id && (
-                    <span className="text-xs text-amber-400 font-bold">Active ✓</span>
+                    <span className="text-xs text-amber-400 font-bold" aria-label="Currently active">Active ✓</span>
                   )}
                 </button>
 
@@ -139,9 +179,9 @@ export function MobileBottomNav() {
                   type="button"
                   onClick={() => {
                     switchUser("customerB");
-                    setProfileDrawerOpen(false);
+                    closeDrawer();
                   }}
-                  className={`w-full flex items-center justify-between p-3 rounded-xl border text-left transition-all ${
+                  className={`w-full flex items-center justify-between p-3 rounded-xl border text-left transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 ${
                     authHydrated && user?.id === DEMO_USERS.customerB.id
                       ? "bg-stone-800 border-blue-500 text-blue-300"
                       : "bg-stone-950/70 border-stone-800 text-stone-200 hover:bg-stone-800/80"
@@ -152,7 +192,7 @@ export function MobileBottomNav() {
                     <p className="text-[11px] text-stone-400">Customer B • Kazanchis neighborhood</p>
                   </div>
                   {authHydrated && user?.id === DEMO_USERS.customerB.id && (
-                    <span className="text-xs text-blue-400 font-bold">Active ✓</span>
+                    <span className="text-xs text-blue-400 font-bold" aria-label="Currently active">Active ✓</span>
                   )}
                 </button>
 
@@ -161,9 +201,9 @@ export function MobileBottomNav() {
                   type="button"
                   onClick={() => {
                     switchUser("staff");
-                    setProfileDrawerOpen(false);
+                    closeDrawer();
                   }}
-                  className={`w-full flex items-center justify-between p-3 rounded-xl border text-left transition-all ${
+                  className={`w-full flex items-center justify-between p-3 rounded-xl border text-left transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 ${
                     authHydrated && user?.id === DEMO_USERS.staff.id
                       ? "bg-stone-800 border-purple-500 text-purple-300"
                       : "bg-stone-950/70 border-stone-800 text-stone-200 hover:bg-stone-800/80"
@@ -174,7 +214,7 @@ export function MobileBottomNav() {
                     <p className="text-[11px] text-stone-400">Staff • Admin access enabled</p>
                   </div>
                   {authHydrated && user?.id === DEMO_USERS.staff.id && (
-                    <span className="text-xs text-purple-400 font-bold">Active ✓</span>
+                    <span className="text-xs text-purple-400 font-bold" aria-label="Currently active">Active ✓</span>
                   )}
                 </button>
               </div>
@@ -187,9 +227,9 @@ export function MobileBottomNav() {
                   type="button"
                   onClick={() => {
                     signOut();
-                    setProfileDrawerOpen(false);
+                    closeDrawer();
                   }}
-                  className="w-full min-h-[44px] flex items-center justify-center py-2.5 px-4 rounded-xl text-xs font-bold bg-stone-800 text-red-300 hover:bg-stone-700 transition-colors border border-stone-700"
+                  className="w-full min-h-[44px] flex items-center justify-center py-2.5 px-4 rounded-xl text-xs font-bold bg-stone-800 text-red-300 hover:bg-stone-700 transition-colors border border-stone-700 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-400"
                 >
                   Sign Out
                 </button>
@@ -198,16 +238,16 @@ export function MobileBottomNav() {
                   <Link
                     href={`/signin?next=${encodeURIComponent(pathname)}`}
                     prefetch={false}
-                    onClick={() => setProfileDrawerOpen(false)}
-                    className="min-h-[44px] flex items-center justify-center py-2.5 px-3 rounded-xl text-xs font-bold bg-stone-800 text-stone-200 hover:bg-stone-700 transition-colors border border-stone-700"
+                    onClick={closeDrawer}
+                    className="min-h-[44px] flex items-center justify-center py-2.5 px-3 rounded-xl text-xs font-bold bg-stone-800 text-stone-200 hover:bg-stone-700 transition-colors border border-stone-700 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500"
                   >
                     Sign In
                   </Link>
                   <Link
                     href={`/signup?next=${encodeURIComponent(pathname)}`}
                     prefetch={false}
-                    onClick={() => setProfileDrawerOpen(false)}
-                    className="min-h-[44px] flex items-center justify-center py-2.5 px-3 rounded-xl text-xs font-bold bg-amber-500 text-stone-950 hover:bg-amber-400 transition-colors shadow-sm"
+                    onClick={closeDrawer}
+                    className="min-h-[44px] flex items-center justify-center py-2.5 px-3 rounded-xl text-xs font-bold bg-amber-500 text-stone-950 hover:bg-amber-400 transition-colors shadow-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500"
                   >
                     Sign Up
                   </Link>
@@ -228,7 +268,7 @@ export function MobileBottomNav() {
           <Link
             href="/"
             prefetch={false}
-            className={`flex flex-col items-center justify-center h-full min-h-[44px] transition-colors ${
+            className={`flex flex-col items-center justify-center h-full min-h-[44px] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 rounded-lg ${
               isActive("/") && pathname === "/" ? "text-amber-400 font-semibold" : "text-stone-400 hover:text-stone-200"
             }`}
             aria-current={pathname === "/" ? "page" : undefined}
@@ -254,7 +294,7 @@ export function MobileBottomNav() {
           <Link
             href="/menu"
             prefetch={false}
-            className={`flex flex-col items-center justify-center h-full min-h-[44px] transition-colors ${
+            className={`flex flex-col items-center justify-center h-full min-h-[44px] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 rounded-lg ${
               isActive("/menu") ? "text-amber-400 font-semibold" : "text-stone-400 hover:text-stone-200"
             }`}
             aria-current={isActive("/menu") ? "page" : undefined}
@@ -280,7 +320,7 @@ export function MobileBottomNav() {
           <Link
             href="/orders"
             prefetch={false}
-            className={`flex flex-col items-center justify-center h-full min-h-[44px] transition-colors ${
+            className={`flex flex-col items-center justify-center h-full min-h-[44px] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 rounded-lg ${
               isActive("/orders") ? "text-amber-400 font-semibold" : "text-stone-400 hover:text-stone-200"
             }`}
             aria-current={isActive("/orders") ? "page" : undefined}
@@ -306,10 +346,10 @@ export function MobileBottomNav() {
           <Link
             href="/cart"
             prefetch={false}
-            className={`relative flex flex-col items-center justify-center h-full min-h-[44px] transition-colors ${
+            className={`relative flex flex-col items-center justify-center h-full min-h-[44px] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 rounded-lg ${
               isActive("/cart") ? "text-amber-400 font-semibold" : "text-stone-400 hover:text-stone-200"
             }`}
-            aria-label={cartHydrated && totalCount > 0 ? `Cart with ${totalCount} items` : "Cart"}
+            aria-label={cartHydrated && totalCount > 0 ? `Shopping cart, ${totalCount} items` : "Shopping cart"}
             aria-current={isActive("/cart") ? "page" : undefined}
           >
             <div className="relative">
@@ -328,7 +368,7 @@ export function MobileBottomNav() {
                 />
               </svg>
               {cartHydrated && totalCount > 0 && (
-                <span className="absolute -top-1.5 -right-2 min-w-[17px] h-4 px-1 rounded-full bg-amber-500 text-stone-950 text-[10px] font-bold flex items-center justify-center leading-none">
+                <span className="absolute -top-1.5 -right-2 min-w-[17px] h-4 px-1 rounded-full bg-amber-500 text-stone-950 text-[10px] font-bold flex items-center justify-center leading-none" aria-hidden="true">
                   {totalCount}
                 </span>
               )}
@@ -338,13 +378,15 @@ export function MobileBottomNav() {
 
           {/* 5. Profile */}
           <button
+            ref={drawerTriggerRef}
             type="button"
             onClick={() => setProfileDrawerOpen((prev) => !prev)}
-            className={`flex flex-col items-center justify-center h-full min-h-[44px] transition-colors ${
+            className={`flex flex-col items-center justify-center h-full min-h-[44px] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 rounded-lg cursor-pointer ${
               isProfileActive ? "text-amber-400 font-semibold" : "text-stone-400 hover:text-stone-200"
             }`}
             aria-expanded={profileDrawerOpen}
-            aria-label="Account and Profile"
+            aria-haspopup="dialog"
+            aria-label="Account and Profile persona menu"
           >
             <svg
               className="w-5 h-5 mb-0.5"

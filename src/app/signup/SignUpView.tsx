@@ -78,10 +78,8 @@ export function SignUpView() {
         return;
       }
 
-      // Display success message only after the account has been saved successfully
       setIsSuccess(true);
 
-      // Redirect user to the existing Sign In page after successful registration
       const signinUrl = validatedNext && validatedNext !== "/"
         ? `/signin?next=${encodeURIComponent(validatedNext)}&registered=true`
         : `/signin?registered=true`;
@@ -108,11 +106,11 @@ export function SignUpView() {
       </div>
 
       {isAuthenticated && (
-        <div className="bg-amber-950/40 border border-amber-800/80 rounded-xl p-4 text-xs text-amber-200 flex items-center justify-between">
+        <div role="status" className="bg-amber-950/40 border border-amber-800/80 rounded-xl p-4 text-xs text-amber-200 flex items-center justify-between">
           <span>Currently signed in as <strong>{user?.name}</strong></span>
           <Link
             href="/signin"
-            className="text-amber-400 hover:text-amber-300 font-semibold underline underline-offset-2"
+            className="text-amber-400 hover:text-amber-300 font-semibold underline underline-offset-2 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 rounded p-1"
           >
             Switch Account
           </Link>
@@ -121,32 +119,37 @@ export function SignUpView() {
 
       {serverError && (
         <div role="alert" className="p-4 bg-red-950/80 border border-red-800 rounded-xl text-xs text-red-200 flex items-center gap-2">
-          <span className="text-base">⚠️</span>
+          <span className="text-base" aria-hidden="true">⚠️</span>
           <span>{serverError}</span>
         </div>
       )}
 
       {isSuccess && (
-        <div className="bg-emerald-950/80 border border-emerald-800 rounded-xl p-4 text-xs text-emerald-200 flex items-center gap-2 animate-in fade-in duration-200">
-          <span className="text-base">✓</span>
+        <div role="status" className="bg-emerald-950/80 border border-emerald-800 rounded-xl p-4 text-xs text-emerald-200 flex items-center gap-2 animate-in fade-in duration-200">
+          <span className="text-base" aria-hidden="true">✓</span>
           <span>Account created successfully! Redirecting you to Sign In...</span>
         </div>
       )}
 
       {/* Registration Form */}
-      <div className="bg-stone-900 border border-stone-800 rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl">
+      <section aria-labelledby="signup-form-title" className="bg-stone-900 border border-stone-800 rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl">
+        <h2 id="signup-form-title" className="sr-only">Sign Up Form</h2>
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <div>
             <label
               htmlFor="full-name"
               className="block text-xs font-semibold text-stone-300 uppercase tracking-wider mb-1.5"
             >
-              Full Name *
+              Full Name <span className="text-amber-500" aria-hidden="true">*</span>
             </label>
             <input
               id="full-name"
               type="text"
+              autoComplete="name"
               required
+              aria-required="true"
+              aria-invalid={!!fieldErrors.fullName}
+              aria-describedby={fieldErrors.fullName ? "fullname-error" : undefined}
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="e.g. Abebe Bikila"
@@ -155,7 +158,7 @@ export function SignUpView() {
               }`}
             />
             {fieldErrors.fullName && (
-              <p className="text-xs text-red-400 mt-1">{fieldErrors.fullName}</p>
+              <p id="fullname-error" role="alert" className="text-xs text-red-400 mt-1">{fieldErrors.fullName}</p>
             )}
           </div>
 
@@ -164,12 +167,16 @@ export function SignUpView() {
               htmlFor="email"
               className="block text-xs font-semibold text-stone-300 uppercase tracking-wider mb-1.5"
             >
-              Email Address *
+              Email Address <span className="text-amber-500" aria-hidden="true">*</span>
             </label>
             <input
               id="email"
               type="email"
+              autoComplete="email"
               required
+              aria-required="true"
+              aria-invalid={!!fieldErrors.email}
+              aria-describedby={fieldErrors.email ? "email-error" : undefined}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="e.g. abebe@example.com"
@@ -178,7 +185,7 @@ export function SignUpView() {
               }`}
             />
             {fieldErrors.email && (
-              <p className="text-xs text-red-400 mt-1">{fieldErrors.email}</p>
+              <p id="email-error" role="alert" className="text-xs text-red-400 mt-1">{fieldErrors.email}</p>
             )}
           </div>
 
@@ -188,12 +195,16 @@ export function SignUpView() {
                 htmlFor="phone"
                 className="block text-xs font-semibold text-stone-300 uppercase tracking-wider mb-1.5"
               >
-                Phone Number *
+                Phone Number <span className="text-amber-500" aria-hidden="true">*</span>
               </label>
               <input
                 id="phone"
                 type="tel"
+                autoComplete="tel"
                 required
+                aria-required="true"
+                aria-invalid={!!fieldErrors.phone}
+                aria-describedby={fieldErrors.phone ? "phone-error" : undefined}
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+251 91 123 4567"
@@ -202,7 +213,7 @@ export function SignUpView() {
                 }`}
               />
               {fieldErrors.phone && (
-                <p className="text-xs text-red-400 mt-1">{fieldErrors.phone}</p>
+                <p id="phone-error" role="alert" className="text-xs text-red-400 mt-1">{fieldErrors.phone}</p>
               )}
             </div>
 
@@ -234,12 +245,16 @@ export function SignUpView() {
                 htmlFor="password"
                 className="block text-xs font-semibold text-stone-300 uppercase tracking-wider mb-1.5"
               >
-                Password *
+                Password <span className="text-amber-500" aria-hidden="true">*</span>
               </label>
               <input
                 id="password"
                 type="password"
+                autoComplete="new-password"
                 required
+                aria-required="true"
+                aria-invalid={!!fieldErrors.password}
+                aria-describedby={fieldErrors.password ? "password-error" : undefined}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="At least 6 characters"
@@ -248,7 +263,7 @@ export function SignUpView() {
                 }`}
               />
               {fieldErrors.password && (
-                <p className="text-xs text-red-400 mt-1">{fieldErrors.password}</p>
+                <p id="password-error" role="alert" className="text-xs text-red-400 mt-1">{fieldErrors.password}</p>
               )}
             </div>
 
@@ -257,12 +272,16 @@ export function SignUpView() {
                 htmlFor="confirm-password"
                 className="block text-xs font-semibold text-stone-300 uppercase tracking-wider mb-1.5"
               >
-                Confirm Password *
+                Confirm Password <span className="text-amber-500" aria-hidden="true">*</span>
               </label>
               <input
                 id="confirm-password"
                 type="password"
+                autoComplete="new-password"
                 required
+                aria-required="true"
+                aria-invalid={!!fieldErrors.confirmPassword}
+                aria-describedby={fieldErrors.confirmPassword ? "confirmpassword-error" : undefined}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Re-enter password"
@@ -271,7 +290,7 @@ export function SignUpView() {
                 }`}
               />
               {fieldErrors.confirmPassword && (
-                <p className="text-xs text-red-400 mt-1">{fieldErrors.confirmPassword}</p>
+                <p id="confirmpassword-error" role="alert" className="text-xs text-red-400 mt-1">{fieldErrors.confirmPassword}</p>
               )}
             </div>
           </div>
@@ -290,13 +309,13 @@ export function SignUpView() {
             Already have an account?{" "}
             <Link
               href={rawNext ? `/signin?next=${encodeURIComponent(rawNext)}` : "/signin"}
-              className="text-amber-400 hover:text-amber-300 font-semibold underline underline-offset-2"
+              className="text-amber-400 hover:text-amber-300 font-semibold underline underline-offset-2 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 rounded p-1"
             >
               Sign In
             </Link>
           </p>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

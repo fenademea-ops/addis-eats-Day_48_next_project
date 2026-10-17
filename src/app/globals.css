@@ -40,10 +40,30 @@ body {
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
-/* Accessible focus outlines */
-:focus-visible {
-  outline: 2px solid #f59e0b;
-  outline-offset: 2px;
+/* ============================================================
+   Accessible focus rings — forced amber outline on ALL elements
+   Uses @layer base so Tailwind utilities don't override it.
+   The box-shadow adds a second visible ring even if outline
+   is hidden/transparent by a Tailwind utility class.
+   ============================================================ */
+@layer base {
+  :focus-visible {
+    outline: 2px solid #f59e0b !important;
+    outline-offset: 2px !important;
+    /* box-shadow ring as fallback in case outline is hidden */
+    box-shadow: 0 0 0 2px #0c0a09, 0 0 0 4px #f59e0b !important;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid #f59e0b !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 2px #0c0a09, 0 0 0 4px #f59e0b !important;
+  }
 }
 
 /* Custom Leaflet Map styling to match dark theme */

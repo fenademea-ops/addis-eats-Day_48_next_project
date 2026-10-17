@@ -62,7 +62,7 @@ export function SignInView() {
           role="status"
           className="bg-emerald-950/60 border border-emerald-800 rounded-2xl p-4 text-xs text-emerald-200 flex items-center gap-3 shadow-md animate-in fade-in duration-200"
         >
-          <span className="text-xl">✓</span>
+          <span className="text-xl" aria-hidden="true">✓</span>
           <div>
             <p className="font-semibold text-emerald-300">Registration Complete</p>
             <p className="text-stone-300 mt-0.5">
@@ -72,13 +72,13 @@ export function SignInView() {
         </div>
       )}
 
-      {/* Security Defense Notification (User-friendly notification when an external redirect is blocked) */}
+      {/* Security Defense Notification */}
       {wasRedirectSanitized && (
         <div
           role="status"
           className="bg-amber-950/40 border border-amber-800/80 rounded-xl p-4 text-xs text-amber-200 flex items-start gap-3 shadow-md"
         >
-          <span className="text-base leading-none">🛡️</span>
+          <span className="text-base leading-none" aria-hidden="true">🛡️</span>
           <div className="space-y-1">
             <p className="font-semibold text-amber-300">Notice: External redirect prevented</p>
             <p className="text-stone-300">
@@ -89,8 +89,8 @@ export function SignInView() {
       )}
 
       {/* Current Active Account Status */}
-      <div className="bg-stone-900 border border-stone-800 rounded-2xl p-6 shadow-md">
-        <h2 className="text-xs font-semibold text-stone-300 uppercase tracking-wider mb-3">
+      <section aria-labelledby="session-status-heading" className="bg-stone-900 border border-stone-800 rounded-2xl p-6 shadow-md">
+        <h2 id="session-status-heading" className="text-xs font-semibold text-stone-300 uppercase tracking-wider mb-3">
           Current Active Session
         </h2>
         {isAuthenticated ? (
@@ -100,6 +100,7 @@ export function SignInView() {
                 className={`w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm text-stone-950 shadow-sm ${
                   user?.role === "staff" ? "bg-purple-400" : "bg-emerald-400"
                 }`}
+                aria-hidden="true"
               >
                 {user?.name.slice(0, 2).toUpperCase()}
               </div>
@@ -130,18 +131,18 @@ export function SignInView() {
           </div>
         ) : (
           <div className="text-xs text-stone-300 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-stone-500" />
+            <span className="w-2 h-2 rounded-full bg-stone-500" aria-hidden="true" />
             <span>Currently browsing as a guest. Sign in with your registered account or select a demo persona below.</span>
           </div>
         )}
-      </div>
+      </section>
 
       {/* Standard Email Sign-In Form */}
-      <div className="bg-stone-900 border border-stone-800 rounded-2xl p-6 sm:p-8 space-y-5 shadow-lg">
+      <section aria-labelledby="signin-form-title" className="bg-stone-900 border border-stone-800 rounded-2xl p-6 sm:p-8 space-y-5 shadow-lg">
         <div>
-          <h2 className="text-base font-serif font-bold text-stone-100">
+          <h1 id="signin-form-title" className="text-base sm:text-lg font-serif font-bold text-stone-100">
             Sign In with Your Account
-          </h2>
+          </h1>
           <p className="text-xs text-stone-400 mt-1">
             Access your orders, saved favorites, and delivery addresses.
           </p>
@@ -153,15 +154,17 @@ export function SignInView() {
           </div>
         )}
 
-        <form onSubmit={handleFormSubmit} className="space-y-4">
+        <form onSubmit={handleFormSubmit} className="space-y-4" noValidate>
           <div>
             <label htmlFor="user-email" className="block text-xs font-semibold text-stone-300 uppercase tracking-wider mb-1.5">
-              Email Address
+              Email Address <span className="text-amber-500" aria-hidden="true">*</span>
             </label>
             <input
               id="user-email"
               type="email"
+              autoComplete="email"
               required
+              aria-required="true"
               value={emailInput}
               onChange={(e) => setEmailInput(e.target.value)}
               placeholder="e.g. abebe@example.com or customer@addiseats.local"
@@ -171,12 +174,14 @@ export function SignInView() {
 
           <div>
             <label htmlFor="user-password" className="block text-xs font-semibold text-stone-300 uppercase tracking-wider mb-1.5">
-              Password
+              Password <span className="text-amber-500" aria-hidden="true">*</span>
             </label>
             <input
               id="user-password"
               type="password"
+              autoComplete="current-password"
               required
+              aria-required="true"
               value={passwordInput}
               onChange={(e) => setPasswordInput(e.target.value)}
               placeholder="Enter your account password"
@@ -198,35 +203,36 @@ export function SignInView() {
             Don&apos;t have an account?{" "}
             <Link
               href={rawNext ? `/signup?next=${encodeURIComponent(rawNext)}` : "/signup"}
-              className="text-amber-400 hover:text-amber-300 font-semibold underline underline-offset-2"
+              className="text-amber-400 hover:text-amber-300 font-semibold underline underline-offset-2 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 rounded p-1"
             >
               Sign up
             </Link>
           </p>
         </div>
-      </div>
+      </section>
 
-      {/* Quick Demo Persona Switcher (Preserved for course testing & verification) */}
-      <div className="space-y-3.5 pt-2">
+      {/* Quick Demo Persona Switcher */}
+      <section aria-labelledby="persona-switcher-title" className="space-y-3.5 pt-2">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-serif font-bold text-stone-100">
+          <h2 id="persona-switcher-title" className="text-sm font-serif font-bold text-stone-100">
             Or Use Demo Persona Switcher
           </h2>
           <span className="text-[11px] text-amber-400 font-medium">1-Click Test Access</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" role="group" aria-label="Demo personas">
           {/* Customer Account 1 */}
           <button
             type="button"
             onClick={() => handleSelectAccount("customer")}
             className="p-4 rounded-xl text-left bg-stone-900 border border-stone-800 hover:border-amber-500/80 hover:bg-stone-900/90 transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 min-h-[44px] group shadow-xs cursor-pointer"
+            aria-label="Sign in as Customer A: Abebe Bikila"
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-wide">
                 Customer A
               </span>
-              <span className="text-xs text-stone-400 group-hover:text-amber-400 group-hover:translate-x-1 transition-all">
+              <span className="text-xs text-stone-400 group-hover:text-amber-400 group-hover:translate-x-1 transition-all" aria-hidden="true">
                 →
               </span>
             </div>
@@ -240,12 +246,13 @@ export function SignInView() {
             type="button"
             onClick={() => handleSelectAccount("customerB")}
             className="p-4 rounded-xl text-left bg-stone-900 border border-stone-800 hover:border-blue-500/80 hover:bg-stone-900/90 transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 min-h-[44px] group shadow-xs cursor-pointer"
+            aria-label="Sign in as Customer B: Sara Haile"
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-[11px] font-bold text-blue-400 uppercase tracking-wide">
                 Customer B
               </span>
-              <span className="text-xs text-stone-400 group-hover:text-amber-400 group-hover:translate-x-1 transition-all">
+              <span className="text-xs text-stone-400 group-hover:text-amber-400 group-hover:translate-x-1 transition-all" aria-hidden="true">
                 →
               </span>
             </div>
@@ -259,12 +266,13 @@ export function SignInView() {
             type="button"
             onClick={() => handleSelectAccount("staff")}
             className="p-4 rounded-xl text-left bg-stone-900 border border-stone-800 hover:border-purple-500/80 hover:bg-stone-900/90 transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 min-h-[44px] group shadow-xs cursor-pointer"
+            aria-label="Sign in as Kitchen Staff: Kitchen Head Chef"
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-[11px] font-bold text-purple-400 uppercase tracking-wide">
                 Kitchen Staff
               </span>
-              <span className="text-xs text-stone-400 group-hover:text-amber-400 group-hover:translate-x-1 transition-all">
+              <span className="text-xs text-stone-400 group-hover:text-amber-400 group-hover:translate-x-1 transition-all" aria-hidden="true">
                 →
               </span>
             </div>
@@ -273,7 +281,7 @@ export function SignInView() {
             <p className="text-[11px] text-purple-400/90 mt-2 font-medium">Admin & Kitchen Access</p>
           </button>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
